@@ -1181,6 +1181,7 @@ name = "rust-grpc"
 version = "0.1.0"
 dependencies = [
  "actix-web",
+ "prost",
  "serde_json",
  "tokio",
  "tonic",

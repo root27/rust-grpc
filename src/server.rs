@@ -1,6 +1,5 @@
 use tonic::{transport::Server, Request, Response, Status};
 
-
 pub mod helloworld {
     tonic::include_proto!("Helloworld");
 }
@@ -13,7 +12,6 @@ pub struct MyGreeter {}
 
 impl helloworld::greeter_server::Greeter for MyGreeter {
     async fn say_hello(&self, request: Request<helloworld::HelloRequest>) -> Result<Response<helloworld::HelloReply>, Status> {
-        println!("Got a request: {:?}", request);
 
         let reply = helloworld::HelloReply {
             message: format!("Hello {}!", request.get_ref().name).into(),
@@ -27,6 +25,8 @@ impl helloworld::greeter_server::Greeter for MyGreeter {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let addr = "[::1]:50051".parse().unwrap();
     let greeter = MyGreeter::default();
+
+    println!("Server listening on {}", addr);
 
     Server::builder()
         .add_service(helloworld::greeter_server::GreeterServer::new(greeter))
