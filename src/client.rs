@@ -1,6 +1,11 @@
 use serde_json::json;
-use tonic::Request;
 use actix_web::{web,App, HttpServer, Responder, HttpResponse};
+
+
+mod structs;
+
+use structs::data::Data;
+
 
 pub mod helloworld {
     tonic::include_proto!("helloworld");
@@ -9,15 +14,18 @@ pub mod helloworld {
 
 
 
-async fn hello () -> impl Responder {
+
+async fn hello (data: web::Json<Data>) -> impl Responder {
 
     let mut client = helloworld::greeter_client::GreeterClient::connect("http://[::1]:50051").await.unwrap();
 
 
 
+    let name = data.name.clone();
 
-    let request = Request::new(helloworld::HelloRequest {
-        name: "Tonic".into(),
+
+    let request = tonic::Request::new(helloworld::HelloRequest {
+        name: name
     });
 
     let response = client.say_hello(request).await.unwrap();
@@ -45,7 +53,7 @@ async fn main () -> std::io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
-            .route("/", web::get().to(hello))
+            .route("/", web::post().to(hello))
     })
     .bind(("127.0.0.1", 8080))
     ?
