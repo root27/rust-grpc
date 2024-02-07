@@ -1,5 +1,11 @@
 use tonic::{ Request, Response, Status};
 
+#[path = "../db/mongo.rs"]
+mod mongo;
+
+use mongo::DB;
+
+
 
 
 pub mod user {
@@ -14,7 +20,7 @@ pub struct MyUserService {}
 #[tonic::async_trait]
 impl user::user_service_server::UserService for MyUserService{
     async fn create_user(&self, request: Request<user::UserRequest>) -> Result<Response<user::UserResponse>, Status> {
-        let user = request.get_ref();
+        let user = request.into_inner();
 
 
         let db = DB::init().await;
@@ -23,9 +29,10 @@ impl user::user_service_server::UserService for MyUserService{
 
 
         match user {
-            Ok(user) => {
+         
+            Ok => {
                 let reply = user::UserResponse {
-                    message: format!("User created with id: {}", user.inserted_id).into(),
+                    message: format!("User created successfully").into(),
                 };
                 Ok(Response::new(reply))
             }
