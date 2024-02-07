@@ -1,4 +1,5 @@
-use tonic::{ Request};
+use serde_json::json;
+use tonic::Request;
 use actix_web::{web,App, HttpServer, Responder, HttpResponse};
 
 pub mod helloworld {
@@ -21,7 +22,12 @@ async fn hello () -> impl Responder {
 
     let response = client.say_hello(request).await.unwrap();
 
-    HttpResponse::Ok().body(format!("RESPONSE={:?}", response))
+    HttpResponse::Ok().json(json!(
+        {
+            "message": response.into_inner().message
+        }
+    
+    ))
 
   
   
@@ -34,6 +40,8 @@ async fn hello () -> impl Responder {
 async fn main () -> std::io::Result<()> {
 
 
+
+    println!("Server listening on {}", 8080);
 
     HttpServer::new(move || {
         App::new()
