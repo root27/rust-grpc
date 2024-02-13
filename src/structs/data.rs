@@ -16,3 +16,11 @@ pub struct UserData {
     pub email: String,
     pub password: String
 }
+
+# [derive(Serialize, Deserialize)]
+
+pub struct GetUser {
+    pub email: String
+}
+
+

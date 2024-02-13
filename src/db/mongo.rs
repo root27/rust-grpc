@@ -1,7 +1,7 @@
 use mongodb::{Collection, Client};
 use serde::{Deserialize, Serialize};
 use tonic::{Request};
-use crate::db_services::user_service::user::UserRequest;
+use crate::db_services::user_service::user::{UserRequest, GetUserRequest};
 use mongodb::results::InsertOneResult;
 use mongodb::bson::doc;
 
@@ -61,6 +61,17 @@ impl DB {
                 Some(doc! {
                     "email": user.email,
                     "password": user.password
+                }),
+                None
+            ).await.unwrap();
+
+            Ok(user)
+        }
+
+        pub async fn get_user(&self, user: GetUserRequest) -> Result<Option<User>, mongodb::error::Error> {
+            let user = self.col.find_one(
+                Some(doc! {
+                    "email": user.email,
                 }),
                 None
             ).await.unwrap();

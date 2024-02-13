@@ -31,8 +31,33 @@ impl user::user_service_server::UserService for MyUserService{
         Ok(Response::new(user::UserResponse {
             message: user.inserted_id.to_string() + "created successfully!"
         }))
+   
+    }
 
+    async fn get_user(&self, request: Request<user::GetUserRequest>) -> Result<Response<user::GetUserResponse>, Status> {
+        let user = request.into_inner();
 
-       
+        let db = DB::init().await;
+
+        let user = db.get_user(user).await.unwrap();
+
+        match user {
+            Some(user) => {
+                Ok(Response::new(user::GetUserResponse {
+                    name: user.name,
+                    age: user.age,
+                    email: user.email,
+                    message: "User found".into()
+                }))
+            }
+            None => {
+                Ok(Response::new(user::GetUserResponse {
+                    name: "".into(),
+                    age: 0,
+                    email: "".into(),
+                    message: "User not found".into()
+                }))
+            }
+        }
     }
 }
