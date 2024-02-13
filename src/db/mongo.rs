@@ -79,7 +79,7 @@ impl DB {
         }
 
 
-        pub async fn update_user(&self, user: UpdateUserRequest ) -> Result<Option<UpdateResult>, mongodb::error::Error> {
+        pub async fn update_user(&self, user: UpdateUserRequest ) -> Result<UpdateResult, mongodb::error::Error> {
             let user = self.col.update_one(
                 doc! {
                     "email": user.email
@@ -91,12 +91,10 @@ impl DB {
                     }
                 },
                 None
-            ).await.unwrap();
+            ).await
+            .expect("Failed to update user");
 
-            Ok(
-                Some(user)
-                
-            )
+           Ok(user)
         }
 
 

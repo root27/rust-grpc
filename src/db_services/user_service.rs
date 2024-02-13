@@ -71,18 +71,25 @@ impl user::user_service_server::UserService for MyUserService{
 
             let user = db.update_user(user).await.unwrap();
 
-            match user {
+            match user.upserted_id {
                 Some(user) => {
                     Ok(Response::new(user::UpdateUserResponse {
-                        message: "User updated successfully".into()
+                        message: "User updated
+                        successfully".into()
                     }))
                 }
-                None => {
-                    Ok(Response::new(user::UpdateUserResponse {
-                        message: "User not found".into()
-                    }))
+
+                    None => {
+                        Ok(Response::new(user::UpdateUserResponse {
+                            message: "User not found".into()
+                        }))
+                    }
                 }
-            }
+
+
+
+
+
         }
 
     
