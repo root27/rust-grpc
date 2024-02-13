@@ -23,4 +23,13 @@ pub struct GetUser {
     pub email: String
 }
 
+#[derive(Serialize, Deserialize)]
+
+pub struct UpdateUser {
+    pub email: String,
+    pub name: String,
+    pub age: i32
+}
+
+
 

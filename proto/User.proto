@@ -3,6 +3,17 @@ syntax = "proto3";
 package user;
 
 
+message UpdateUserRequest {
+    string email=1;
+    string name =2;
+    int32 age=3;
+}
+
+message UpdateUserResponse {
+    string message=1;
+   
+}
+
 
 message UserRequest {
     string name =1;
@@ -31,4 +42,5 @@ message GetUserResponse {
 service UserService {
     rpc CreateUser(UserRequest) returns (UserResponse);
     rpc GetUser(GetUserRequest) returns (GetUserResponse);
+    rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
 }

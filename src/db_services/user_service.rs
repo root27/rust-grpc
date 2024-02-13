@@ -62,4 +62,28 @@ impl user::user_service_server::UserService for MyUserService{
             }
         }
     }
+
+
+        async fn update_user(&self, request: Request<user::UpdateUserRequest>) -> Result<Response<user::UpdateUserResponse>, Status> {
+            let user = request.into_inner();
+
+            let db = DB::init().await;
+
+            let user = db.update_user(user).await.unwrap();
+
+            match user {
+                Some(user) => {
+                    Ok(Response::new(user::UpdateUserResponse {
+                        message: "User updated successfully".into()
+                    }))
+                }
+                None => {
+                    Ok(Response::new(user::UpdateUserResponse {
+                        message: "User not found".into()
+                    }))
+                }
+            }
+        }
+
+    
 }

@@ -1,8 +1,7 @@
 use mongodb::{Collection, Client};
 use serde::{Deserialize, Serialize};
-use tonic::{Request};
-use crate::db_services::user_service::user::{UserRequest, GetUserRequest};
-use mongodb::results::InsertOneResult;
+use crate::db_services::user_service::user::{UserRequest, GetUserRequest, UpdateUserRequest};
+use mongodb::results::{InsertOneResult, UpdateResult};
 use mongodb::bson::doc;
 
 
@@ -77,6 +76,27 @@ impl DB {
             ).await.unwrap();
 
             Ok(user)
+        }
+
+
+        pub async fn update_user(&self, user: UpdateUserRequest ) -> Result<Option<UpdateResult>, mongodb::error::Error> {
+            let user = self.col.update_one(
+                doc! {
+                    "email": user.email
+                },
+                doc! {
+                    "$set": {
+                        "name": user.name,
+                        "age": user.age
+                    }
+                },
+                None
+            ).await.unwrap();
+
+            Ok(
+                Some(user)
+                
+            )
         }
 
 

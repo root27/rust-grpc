@@ -10,11 +10,11 @@ use mongo::DB;
 
 mod structs;
 
-use structs::data::{UserData,GetUser};
+use structs::data::{UserData,GetUser,UpdateUser};
 
 mod db_services;
 use db_services::user_service::user::user_service_client;
-use db_services::user_service::user::{UserRequest, GetUserRequest};
+use db_services::user_service::user::{UserRequest, GetUserRequest,UpdateUserRequest};
 
 async fn db_get(user: web::Json<GetUser> ) -> impl Responder {
 
@@ -44,7 +44,22 @@ async fn db_get(user: web::Json<GetUser> ) -> impl Responder {
 }
 
 
+async fn db_update (user: web::Json<UpdateUser>) -> impl Responder {
+    let user = user.into_inner();
 
+    let user = UpdateUserRequest {
+        email: user.email,
+        name: user.name,
+        age: user.age
+    };
+
+    let mut client = user_service_client::UserServiceClient::connect("http://[::1]:50051").await.unwrap();
+    let response = client.update_user(user).await.unwrap();
+
+    HttpResponse::Ok().json(json!({
+        "message": response.into_inner().message
+    }))
+}
 
 
 async fn user_exists (user: UserRequest) -> bool {
@@ -109,6 +124,7 @@ async fn main () -> std::io::Result<()> {
         App::new()
             .route("/", web::post().to(db_create))
             .route("/user", web::post().to(db_get))
+            .route("/update", web::post().to(db_update))
     })
     .bind(("127.0.0.1", 8080))
     ?
