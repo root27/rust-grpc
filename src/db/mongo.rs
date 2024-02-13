@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use tonic::{Request};
 use crate::db_services::user_service::user::UserRequest;
 use mongodb::results::InsertOneResult;
+use mongodb::bson::doc;
 
 
 #[derive(Serialize, Deserialize)]
@@ -52,6 +53,19 @@ impl DB {
        
         Ok(user)
 
+        }
+
+
+        pub async fn find_user(&self, user: UserRequest) -> Result<Option<User>, mongodb::error::Error> {
+            let user = self.col.find_one(
+                Some(doc! {
+                    "email": user.email,
+                    "password": user.password
+                }),
+                None
+            ).await.unwrap();
+
+            Ok(user)
         }
 
 
