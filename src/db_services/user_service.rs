@@ -28,23 +28,11 @@ impl user::user_service_server::UserService for MyUserService{
         let user = db.create_user(user).await.unwrap();
 
 
-        match user {
-         
-            Ok => {
-                let reply = user::UserResponse {
-                    message: format!("User created successfully").into(),
-                };
-                Ok(Response::new(reply))
-            }
+        Ok(Response::new(user::UserResponse {
+            message: "User created successfully".into()
+        }))
 
-            Error => {
-                let reply = user::UserResponse {
-                    message: format!("Failed to create user").into(),
-                };
-                Ok(Response::new(reply))
-            }
-        }
-
+        
        
     }
 }

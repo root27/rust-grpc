@@ -1,8 +1,8 @@
 use mongodb::{Collection, Client};
 use serde::{Deserialize, Serialize};
-use mongodb::results::InsertOneResult;
 use tonic::{Request};
 use crate::db_services::user_service::user::UserRequest;
+use mongodb::results::InsertOneResult;
 
 
 #[derive(Serialize, Deserialize)]
@@ -20,6 +20,8 @@ pub struct User {
 pub struct DB {
     col: Collection<User>
 }
+
+
 
 
 impl DB {
@@ -47,10 +49,8 @@ impl DB {
             insert_one(new_doc, None).await
             .expect("Failed to insert document");
 
+       
         Ok(user)
-
-
-
 
         }
 
