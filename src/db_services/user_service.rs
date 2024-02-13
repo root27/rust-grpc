@@ -44,6 +44,7 @@ impl user::user_service_server::UserService for MyUserService{
         match user {
             Some(user) => {
                 Ok(Response::new(user::GetUserResponse {
+                    id: user.id.unwrap().to_hex(),
                     name: user.name,
                     age: user.age,
                     email: user.email,
@@ -52,6 +53,7 @@ impl user::user_service_server::UserService for MyUserService{
             }
             None => {
                 Ok(Response::new(user::GetUserResponse {
+                    id: "".into(),
                     name: "".into(),
                     age: 0,
                     email: "".into(),

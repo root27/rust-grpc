@@ -32,10 +32,10 @@ async fn db_get(user: web::Json<GetUser> ) -> impl Responder {
         let response = response.into_inner();
 
         HttpResponse::Ok().json(json!({
-
+            "id": response.id,
+            "email": response.email,
             "name": response.name,
             "age": response.age,
-
             "message": response.message
         }))
 
