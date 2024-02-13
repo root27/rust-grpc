@@ -25,14 +25,16 @@ impl user::user_service_server::UserService for MyUserService{
 
         let db = DB::init().await;
 
-        let user = db.create_user(user).await.unwrap();
+        let user_result = db.create_user(user).await.unwrap();
 
 
         Ok(Response::new(user::UserResponse {
-            message: user.inserted_id.to_string() + "created successfully!"
+            message: "User created successfully".into()
         }))
-   
+
     }
+   
+    
 
     async fn get_user(&self, request: Request<user::GetUserRequest>) -> Result<Response<user::GetUserResponse>, Status> {
         let user = request.into_inner();
@@ -92,5 +94,4 @@ impl user::user_service_server::UserService for MyUserService{
 
         }
 
-    
 }
