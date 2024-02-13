@@ -23,6 +23,10 @@ async fn db_create (data: web::Json<UserData>) -> impl Responder {
     let mut client = user_service_client::UserServiceClient::connect("http://[::1]:50051").await.unwrap();
     let response = client.create_user(user).await.unwrap();
 
+
+    
+
+
     HttpResponse::Ok().json(json!({
         "message": response.into_inner().message
     }))

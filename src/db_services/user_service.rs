@@ -29,10 +29,10 @@ impl user::user_service_server::UserService for MyUserService{
 
 
         Ok(Response::new(user::UserResponse {
-            message: "User created successfully".into()
+            message: user.inserted_id.to_string() + "created successfully!"
         }))
 
-        
+
        
     }
 }
