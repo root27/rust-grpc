@@ -25,14 +25,27 @@ impl user::user_service_server::UserService for MyUserService{
 
         let db = DB::init().await;
 
-        let user_result = db.create_user(user).await.unwrap();
+        let user_result = match db.create_user(user).await {
+
+            Ok(_) => {
+                Ok(Response::new(user::UserResponse {
+                    message: "User created".into()
+                }))
+            }
+
+            Err(_) => {
+                Ok(Response::new(user::UserResponse {
+                    message: "User not created".into()
+                }))
+            }
+        };
 
 
-        Ok(Response::new(user::UserResponse {
-            message: "User created successfully".into()
-        }))
+        user_result
+      
 
     }
+
    
     
 

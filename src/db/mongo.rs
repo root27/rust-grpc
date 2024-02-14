@@ -47,10 +47,9 @@ impl DB {
         let user = self.
             col.
             insert_one(new_doc, None).await
-            .expect("Failed to insert document");
+            .unwrap();
 
-       
-        Ok(user)
+            Ok(user)
 
         }
 
