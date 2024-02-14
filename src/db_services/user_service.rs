@@ -20,8 +20,10 @@ pub struct MyUserService {}
 #[tonic::async_trait]
 impl user::user_service_server::UserService for MyUserService{
     async fn create_user(&self, request: Request<user::UserRequest>) -> Result<Response<user::UserResponse>, Status> {
+        
+        
+        
         let user = request.into_inner();
-
 
         let db = DB::init().await;
 
@@ -89,7 +91,7 @@ impl user::user_service_server::UserService for MyUserService{
             let user = db.update_user(user).await.unwrap();
 
             match user.upserted_id {
-                Some(user) => {
+                Some(_) => {
                     Ok(Response::new(user::UpdateUserResponse {
                         message: "User updated
                         successfully".into()
