@@ -1,7 +1,7 @@
 use mongodb::{Collection, Client};
 use serde::{Deserialize, Serialize};
-use crate::db_services::user_service::user::{UserRequest, GetUserRequest, UpdateUserRequest};
-use mongodb::results::{InsertOneResult, UpdateResult};
+use crate::db_services::user_service::user::{UserRequest, GetUserRequest, UpdateUserRequest, DeleteUserRequest};
+use mongodb::results::{DeleteResult, InsertOneResult, UpdateResult};
 use mongodb::bson::doc;
 
 
@@ -94,6 +94,22 @@ impl DB {
             .expect("Failed to update user");
 
            Ok(user)
+        }
+
+
+        pub async fn delete_user(&self, user: DeleteUserRequest) -> Result<DeleteResult, mongodb::error::Error> {
+
+            let user = self.col.delete_one(
+                doc! {
+                    "email": user.email
+                },None).await.unwrap();
+
+
+
+                Ok(user)
+
+
+
         }
 
 

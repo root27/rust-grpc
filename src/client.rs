@@ -10,10 +10,10 @@ use mongo::DB;
 
 mod structs;
 
-use structs::data::{UserData,GetUser,UpdateUser};
+use structs::data::{UserData,GetUser,UpdateUser,DeleteUser};
 
 mod db_services;
-use db_services::user_service::user::user_service_client;
+use db_services::user_service::user::{self, user_service_client};
 use db_services::user_service::user::{UserRequest, GetUserRequest,UpdateUserRequest};
 
 async fn db_get(user: web::Json<GetUser> ) -> impl Responder {
@@ -77,6 +77,26 @@ async fn user_exists (user: UserRequest) -> bool {
 } 
 
 
+async fn db_delete(data: web::Json<DeleteUser>) -> impl Responder {
+    let user_data = data.into_inner();
+
+
+    let delete_request = user::DeleteUserRequest {
+        email: user_data.email
+    };
+
+    let mut client = user_service_client::UserServiceClient::connect("http://[::1]:50051").await.unwrap();
+
+    let response = client.delete_user(delete_request).await.unwrap();
+
+    HttpResponse::Ok().json(json!({
+        "message": response.into_inner().message
+    }))
+
+
+}
+
+
 async fn db_create (data: web::Json<UserData>) -> impl Responder {
     let user = data.into_inner();
     let user = UserRequest {
@@ -125,6 +145,7 @@ async fn main () -> std::io::Result<()> {
             .route("/", web::post().to(db_create))
             .route("/user", web::post().to(db_get))
             .route("/update", web::post().to(db_update))
+            .route("/delete", web::post().to(db_delete))
     })
     .bind(("127.0.0.1", 8080))
     ?

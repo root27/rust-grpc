@@ -42,7 +42,9 @@ impl user::user_service_server::UserService for MyUserService{
 
 
         user_result
-      
+
+
+        
 
     }
 
@@ -106,5 +108,44 @@ impl user::user_service_server::UserService for MyUserService{
 
 
         }
+
+
+
+    async fn delete_user(&self, request: Request<user::DeleteUserRequest>) -> Result<Response<user::DeleteUserResponse>, Status> {
+
+        let user = request.into_inner();
+
+        let db = DB::init().await;
+
+        let user_result =  db.delete_user(user).await.unwrap();
+
+       match user_result.deleted_count {
+
+            1 => {
+                Ok(Response::new(user::DeleteUserResponse{
+                    message: "User deleted".into(),
+                }))
+            }
+
+            0 => {
+                Ok(Response::new(user::DeleteUserResponse{
+                    message: "not deleted".into()
+                }))
+            } 
+
+            _ => {
+                Ok(Response::new(user::DeleteUserResponse{
+                    message: "unknown delete status".into()
+                }))
+            }
+       }
+
+
+
+        }
+
+
+
+    
 
 }

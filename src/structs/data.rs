@@ -32,4 +32,11 @@ pub struct UpdateUser {
 }
 
 
+#[derive(Serialize,Deserialize)] 
+
+pub struct DeleteUser {
+    pub email: String
+}
+
+
 
